@@ -7,15 +7,14 @@ from .common_functions import J_nu
 
 # g_u, E_u, and A_ul values obtained from LAMBDA database
 
-def extract_paras_from_url(url):
-    """Downloads a data file from a URL, extracts the WEIGHT column, and stores it in a NumPy array."""
-    # Download the file content
-    response = requests.get(url)
-    response.raise_for_status()  # Raise an error for bad responses
+def extract_from_lambda(filename):
+    # read the file content
+    f = open(filename, 'r')
     
     # Read the content line by line
-    lines = response.text.splitlines()
-    
+    lines = f.readlines()
+    f.close()
+
     # Make an empty dictionary for J_Kp_Ko, E_u (cm-1), and g_u values
     level_dict={'E_u':[], 'g_u':[]}
     # Make an empty dictionary for frequency (GHz), A_ul, and E_u (K) values
@@ -59,8 +58,8 @@ def extract_paras_from_url(url):
    
     return level_dict, trans_dict
 
-p_level_dict, p_trans_dict = extract_paras_from_url("https://home.strw.leidenuniv.nl/~moldata/datafiles/p-c3h2.dat")
-o_level_dict, o_trans_dict = extract_paras_from_url("https://home.strw.leidenuniv.nl/~moldata/datafiles/o-c3h2.dat")
+p_level_dict, p_trans_dict = extract_from_lambda("p-c3h2.dat")
+o_level_dict, o_trans_dict = extract_from_lambda("o-c3h2.dat")
 gu_p_list = np.array(p_level_dict['g_u'])
 E_u_p_list = (np.array(p_level_dict['E_u'])* (h * c / k_B) / u.cm).to(u.K)
 gu_o_list = np.array(o_level_dict['g_u'])
