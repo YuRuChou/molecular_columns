@@ -7,14 +7,12 @@ from .common_functions import J_nu
 
 # g_u, E_u, and A_ul values obtained from LAMBDA database
 
-def extract_paras_from_url(url):
-    """Downloads a data file from a URL, extracts the WEIGHT column, and stores it in a NumPy array."""
-    # Download the file content
-    response = requests.get(url)
-    response.raise_for_status()  # Raise an error for bad responses
-    
+def extract_from_lambda(filename):
+    # Read the content of the fil
+    f = open(filename, 'r')
     # Read the content line by line
-    lines = response.text.splitlines()
+    lines = f.readlines()
+    f.close()
     
     # Make an empty dictionary for J_Kp_Ko, E_u (cm-1), and g_u values
     level_dict={'E_u':[], 'g_u':[]}
@@ -59,7 +57,7 @@ def extract_paras_from_url(url):
    
     return level_dict, trans_dict
 
-level_dict, trans_dict = extract_paras_from_url("https://home.strw.leidenuniv.nl/~moldata/datafiles/so2@highT.dat")
+level_dict, trans_dict = extract_from_lambda("so2@highT.dat")
 gu_list = np.array(level_dict['g_u'])
 E_u_list = (np.array(level_dict['E_u'])* (h * c / k_B) / u.cm).to(u.K)
 
