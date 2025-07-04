@@ -3,12 +3,18 @@ import requests
 import astropy.units as u
 from astropy.constants import c, k_B, h
 from .common_functions import J_nu
-
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
 
 # g_u, E_u, and A_ul values obtained from LAMBDA database
 
-def extract_paras_from_dat(file_name):
-    f = open(file_name, 'r')
+def extract_from_lambda(file_name):
+    # Read the content of the file
+    file_mol = files("molecular_columns").joinpath(file_name)
+    f = open(file_mol, 'r')
+    # Read the content line by line
     lines = f.readlines()
     f.close()
     
@@ -50,8 +56,8 @@ def extract_paras_from_dat(file_name):
    
     return level_dict, trans_dict
 
-p_level_dict, p_trans_dict = extract_paras_from_dat("ph2co-h2.dat")
-o_level_dict, o_trans_dict = extract_paras_from_dat("oh2co-h2.dat")
+p_level_dict, p_trans_dict = extract_from_lambda("ph2co-h2.dat")
+o_level_dict, o_trans_dict = extract_from_lambda("oh2co-h2.dat")
 gu_p_list = np.array(p_level_dict['g_u'])
 E_u_p_list = (np.array(p_level_dict['E_u'])* (h * c / k_B) / u.cm).to(u.K)
 gu_o_list = np.array(o_level_dict['g_u'])
