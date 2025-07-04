@@ -11,6 +11,7 @@ except ImportError:
 
 # g_u, E_u, and A_ul values obtained from LAMBDA database
 
+
 def extract_from_lambda(file_name):
     # Read the content of the file
     file_mol = files("molecular_columns").joinpath(file_name)
