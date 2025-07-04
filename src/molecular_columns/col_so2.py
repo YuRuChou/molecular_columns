@@ -8,8 +8,9 @@ from .common_functions import J_nu
 # g_u, E_u, and A_ul values obtained from LAMBDA database
 
 def extract_from_lambda(filename):
-    # Read the content of the fil
-    f = open(filename, 'r')
+    # Read the content from the file
+    file_mol = files("molecular_columns").joinpath(filename)
+    f = open(file_mol, 'r')
     # Read the content line by line
     lines = f.readlines()
     f.close()
