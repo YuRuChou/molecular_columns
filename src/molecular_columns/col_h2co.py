@@ -3,18 +3,20 @@ import requests
 import astropy.units as u
 from astropy.constants import c, k_B, h
 from .common_functions import J_nu
-
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
 
 # g_u, E_u, and A_ul values obtained from LAMBDA database
 
-def extract_paras_from_url(url):
-    """Downloads a data file from a URL, extracts the WEIGHT column, and stores it in a NumPy array."""
-    # Download the file content
-    response = requests.get(url)
-    response.raise_for_status()  # Raise an error for bad responses
-    
+def extract_from_lambda(file_name):
+    # Read the content of the file
+    file_mol = files("molecular_columns").joinpath(file_name)
+    f = open(file_mol, 'r')
     # Read the content line by line
-    lines = response.text.splitlines()
+    lines = f.readlines()
+    f.close()
     
     # Make an empty dictionary for J_Kp_Ko, E_u (cm-1), and g_u values
     level_dict={'J_Kp_Ko':[], 'E_u':[], 'g_u':[]}
@@ -54,8 +56,8 @@ def extract_paras_from_url(url):
    
     return level_dict, trans_dict
 
-p_level_dict, p_trans_dict = extract_paras_from_url("https://home.strw.leidenuniv.nl/~moldata/datafiles/ph2co-h2.dat")
-o_level_dict, o_trans_dict = extract_paras_from_url("https://home.strw.leidenuniv.nl/~moldata/datafiles/oh2co-h2.dat")
+p_level_dict, p_trans_dict = extract_from_lambda("ph2co-h2.dat")
+o_level_dict, o_trans_dict = extract_from_lambda("oh2co-h2.dat")
 gu_p_list = np.array(p_level_dict['g_u'])
 E_u_p_list = (np.array(p_level_dict['E_u'])* (h * c / k_B) / u.cm).to(u.K)
 gu_o_list = np.array(o_level_dict['g_u'])

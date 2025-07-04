@@ -3,18 +3,23 @@ import requests
 import astropy.units as u
 from astropy.constants import c, k_B, h
 from .common_functions import J_nu
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
 
 
 # g_u, E_u, and A_ul values obtained from LAMBDA database
 
-def extract_from_lambda(filename):
-    # read the file content
-    f = open(filename, 'r')
-    
+
+def extract_from_lambda(file_name):
+    # Read the content of the file
+    file_mol = files("molecular_columns").joinpath(file_name)
+    f = open(file_mol, 'r')
     # Read the content line by line
     lines = f.readlines()
     f.close()
-
+    
     # Make an empty dictionary for J_Kp_Ko, E_u (cm-1), and g_u values
     level_dict={'E_u':[], 'g_u':[]}
     # Make an empty dictionary for frequency (GHz), A_ul, and E_u (K) values
